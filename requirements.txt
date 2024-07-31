@@ -1,0 +1,4 @@
+mypy==1.11.1
+mypy-extensions==1.0.0
+nose2==0.15.1
+typing_extensions==4.12.2
