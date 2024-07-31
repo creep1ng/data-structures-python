@@ -1,4 +1,4 @@
-from src.polynomial import Polynomial
+from polynomial import Polynomial
 from unittest import TestCase
 
 class TestPolynomial(TestCase):
