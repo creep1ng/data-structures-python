@@ -14,7 +14,7 @@ class Polynomial:
     def __eq__(self, y) -> bool:
         raise NotImplementedError
 
-    def __add__(self, y) -> Polynomial:
+    def __add__(self, y) -> 'Polynomial':
         max_grade: int = max(len(self._coefficients, y._coefficients))
 
         self._coefficients.extend([0] * (max_grade - len(self._coefficients)))
