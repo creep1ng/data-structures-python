@@ -2,10 +2,12 @@ from typing import List, Dict
 from random import sample, choice
 from enum import Enum, auto
 
+
 class Card:
     # CARD_RANKS stores the possible values for each card rank.
-    CARD_RANKS: List[str] = ["As", "2", "3", "4,",
-                             "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+    # The ranks are sorted from smallest value to highest value.
+    CARD_RANKS: List[str] = ["2", "3", "4",
+                             "5", "6", "7", "8", "9", "10", "J", "Q", "K", "As"]
 
     # CARD_SUITS stores the possible values for each card suit.
     CARD_SUITS: Dict[str, str] = {
@@ -83,6 +85,7 @@ class Hand:
 
     def _get_hand_type(self) -> 'HandTypes':
         pass
+
 
 class HandTypes(Enum):
     HIGH_CARD = auto()
