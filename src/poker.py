@@ -1,11 +1,13 @@
 from typing import List, Dict
-from random import sample
+from random import sample, choice
+from enum import Enum, auto
 
 class Card:
-    #CARD_RANKS stores the possible values for each card rank.
-    CARD_RANKS: List[str] = ["As", "2", "3", "4,", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+    # CARD_RANKS stores the possible values for each card rank.
+    CARD_RANKS: List[str] = ["As", "2", "3", "4,",
+                             "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
-    #CARD_SUITS stores the possible values for each card suit.
+    # CARD_SUITS stores the possible values for each card suit.
     CARD_SUITS: Dict[str, str] = {
         "clubs": "♣",
         "diamonds": "♦",
@@ -25,10 +27,12 @@ class Card:
         """
 
         if card_rank not in self.CARD_RANKS:
-            raise ValueError(f"`card_rank` must be some of these options: {CARD_RANKS}")
+            raise ValueError(
+                f"`card_rank` must be some of these options: {CARD_RANKS}")
 
         if card_suit not in self.CARD_SUITS.keys():
-            raise ValueError(f"`card_suit` must be some of these options: {self.CARD_SUITS.keys()}")
+            raise ValueError(f"`card_suit` must be some of these options: {
+                             self.CARD_SUITS.keys()}")
 
         self._card_rank = card_rank
         self._card_suit = card_suit
@@ -36,9 +40,11 @@ class Card:
     def __repr__(self) -> str:
         return f"{self.CARD_SUITS[self._card_suit]}{self._card_rank}"
 
+
 class Deck:
-    _CARDS: List[Card] = [Card(card_rank, card_suit) for card_suit in Card.CARD_SUITS.keys() for card_rank in Card.CARD_RANKS]
-    
+    _CARDS: List[Card] = [Card(card_rank, card_suit)
+                          for card_suit in Card.CARD_SUITS.keys() for card_rank in Card.CARD_RANKS]
+
     _cards: List[Card]
 
     def __init__(self) -> None:
@@ -46,10 +52,57 @@ class Deck:
         self._cards = sample(self._CARDS, k=len(self._CARDS))
 
     def __repr__(self) -> str:
-        return f"{[card.__repr__ for card in self._cards]}"
+        return f"{self._cards}"
+
+    def pick_card(self) -> Card:
+        """Pick a random card from the deck, removes this card from the deck, and return the picked card."""
+        picked_card = choice(self._cards)
+        self._cards.remove(picked_card)
+
+        return picked_card
+
+
+class Hand:
+    _cards: List[Card]
+    _player_name: str
+
+    def __init__(self, deck: Deck, player_name: str) -> None:
+        self._cards = [deck.pick_card() for _ in range(6)]
+        self._player_name = player_name
+
+    def __repr__(self) -> str:
+        return f"{self._player_name} has {self._cards}"
+
+    def replace(self, deck: Deck, card_index: int) -> None:
+        """Replace the `card_index` with a random card. The cards' index starts in 0."""
+        if card_index not in [i for i in range(1, 6)]:
+            raise IndexError(f"Cannot replace the {
+                             card_index}th card. Use a index between 1 and 5.")
+
+        self._cards[card_index] = deck.pick_card()
+
+    def _get_hand_type(self) -> 'HandTypes':
+        pass
+
+class HandTypes(Enum):
+    HIGH_CARD = auto()
+    ONE_PAIR = auto()
+    # ...
+
 
 if __name__ == "__main__":
-    c1 = Card("As", "clubs")
-    print(c1)
-    print(Deck._CARDS)
-    print(Deck()._cards)
+    deck = Deck()
+    print(deck._CARDS)
+    p1 = Hand(deck, "p1")
+    print("*"*30)
+    print()
+
+    print(p1)
+    print(deck._cards)
+    print("*"*30)
+    print()
+
+    p1.replace(deck, 2)
+    print(p1)
+    print(deck)
+    print("*"*30)
