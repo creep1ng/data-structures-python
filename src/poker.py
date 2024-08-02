@@ -22,7 +22,7 @@ class Card:
 
     def __init__(self, card_rank: str, card_suit: str) -> None:
         """Creates an instance of `Card`.
-        `card_rank`: Must be one of "As", "2", "3", "4,", "5", "6", "7", "8", "9", "10", "J", "Q", "K".
+        `card_rank`: Must be one of "2", "3", "4,", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "As".
         `card_suit: Must be one of "clubs", "diamonds", "hearts", or "spades".capitalize
 
         Raises ValueError if `card_rank` and/or `card_suit` isn't one of the accepted values.
@@ -84,7 +84,27 @@ class Hand:
         self._cards[card_index] = deck.pick_card()
 
     def _get_hand_type(self) -> 'HandTypes':
-        pass
+        """To get the frequency of cards suits, we can use a dict like this:
+        {
+            'clubs': 1,
+            'spades': 2,
+            'hearts': 0, 
+            'diamonds': 2
+        }
+        """
+
+        cards_ranks_frequency: Dict[str, int] = {rank: 0 for rank in Card.CARD_RANKS.keys()}
+        cards_spades_frequency: Dict[str, int] = {suit: 0 for suit in Card.CARD_SUITS.keys()}
+
+        for card in self._cards:
+            cards_spades_frequency[card._card_suit] += 1
+            cards_ranks_frequency[card._card_rank] += 1
+
+        # High card case
+        if max(cards_frequency.values()) == 1:
+            return HandTypes.HIGH_CARD
+        # One pair case
+        elif []
 
 
 class HandTypes(Enum):
