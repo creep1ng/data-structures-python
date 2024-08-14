@@ -1,5 +1,5 @@
 from typing import List
-from random import choice
+from random import choice, sample
 from card import Card
 
 class Deck:

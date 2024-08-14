@@ -1,6 +1,7 @@
 from typing import List, Dict, Set
 from handtypes import HandTypes
 from card import Card
+from deck import Deck
 
 class Hand:
     _cards: List[Card]
@@ -30,18 +31,27 @@ class Hand:
     def _get_hand_type(self) -> 'HandTypes':
         """To get the frequency of cards suits, we can use a dict like this:
         {
-            'clubs': [A, 2],
+            'clubs': {A, 2},
             'spades': [2],
             'hearts': [J], 
             'diamonds': [10]
         }
+
+        {
+            'As': ['clubs'],
+            'Q': [],
+            'J': ['hearts'],
+            ...
+        }
         """
+        hand_by_rank: Dict[str, List[str]] = dict.fromkeys(Card.CARD_RANKS, [])
 
-        hand_by_suit: Dict[str, Set[str]] = dict.fromkeys(Card.CARD_SUITS, {})
+        print(hand_by_rank)
 
-        for card in sorted(self._cards):
-            hand_by_suit[card._card_suit].add()
+        #for card in self._cards:
+            #if card._card_rank in hand_by_rank:
+                #hand_by_rank[card._card_rank] = hand_by_rank[card._card_rank].append(card._card_suit)
         
-        if set.intersection(hand_by_suit) != {}:
-            pass
- 
+        hand_by_rank['As'].append(3)
+
+        print(hand_by_rank)
