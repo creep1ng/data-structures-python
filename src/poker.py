@@ -42,6 +42,9 @@ class Card:
     def __repr__(self) -> str:
         return f"{self.CARD_SUITS[self._card_suit]}{self._card_rank}"
 
+    def __ge__(self, y) -> bool:
+        return self.CARD_RANKS.index(self._card_rank) <= self.CARD_RANKS.index(y._card_rank)
+
 
 class Deck:
     _CARDS: List[Card] = [Card(card_rank, card_suit)
@@ -75,6 +78,10 @@ class Hand:
     def __repr__(self) -> str:
         return f"{self._player_name} has {self._cards}"
 
+    def sort(self) -> List[Card]:
+        # TODO: Fix this ordering method.
+        return sorted(self._cards, key=lambda card: card._card_rank)
+
     def replace(self, deck: Deck, card_index: int) -> None:
         """Replace the `card_index` with a random card. The cards' index starts in 0."""
         if card_index not in [i for i in range(1, 6)]:
@@ -86,25 +93,19 @@ class Hand:
     def _get_hand_type(self) -> 'HandTypes':
         """To get the frequency of cards suits, we can use a dict like this:
         {
-            'clubs': 1,
-            'spades': 2,
-            'hearts': 0, 
-            'diamonds': 2
+            'clubs': [A, 2],
+            'spades': [2],
+            'hearts': [J], 
+            'diamonds': [10]
         }
         """
 
-        cards_ranks_frequency: Dict[str, int] = {rank: 0 for rank in Card.CARD_RANKS.keys()}
-        cards_spades_frequency: Dict[str, int] = {suit: 0 for suit in Card.CARD_SUITS.keys()}
+        hand_by_suit: Dict[str, List[str]] = dict.fromkeys(Card.CARD_SUITS, [])
 
         for card in self._cards:
-            cards_spades_frequency[card._card_suit] += 1
-            cards_ranks_frequency[card._card_rank] += 1
+            hand_by_suit[card._card_suit].append(card._card_rank)
 
-        # High card case
-        if max(cards_frequency.values()) == 1:
-            return HandTypes.HIGH_CARD
-        # One pair case
-        elif []
+        
 
 
 class HandTypes(Enum):
@@ -129,3 +130,5 @@ if __name__ == "__main__":
     print(p1)
     print(deck)
     print("*"*30)
+
+    print(p1.sort())
