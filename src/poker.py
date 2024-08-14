@@ -42,7 +42,7 @@ class Card:
     def __repr__(self) -> str:
         return f"{self.CARD_SUITS[self._card_suit]}{self._card_rank}"
 
-    def __ge__(self, y) -> bool:
+    def __gt__(self, y) -> bool:
         return self.CARD_RANKS.index(self._card_rank) <= self.CARD_RANKS.index(y._card_rank)
 
 
@@ -78,9 +78,11 @@ class Hand:
     def __repr__(self) -> str:
         return f"{self._player_name} has {self._cards}"
 
-    def sort(self) -> List[Card]:
-        # TODO: Fix this ordering method.
-        return sorted(self._cards, key=lambda card: card._card_rank)
+    def sort(self) -> None:
+        """Sorts in-place the cards according to cards' rank's values."""
+
+        # Just a wrapper of sorted ;)
+        self._cards = sorted(self._cards)
 
     def replace(self, deck: Deck, card_index: int) -> None:
         """Replace the `card_index` with a random card. The cards' index starts in 0."""
