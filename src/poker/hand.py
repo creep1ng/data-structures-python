@@ -9,8 +9,8 @@ class Hand:
     _player_name: str
 
     def __init__(self, deck: Deck, player_name: str) -> None:
-        self._cards = [deck.pick_card() for _ in range(6)]
-        self._player_name = player_name
+        self._cards: List[Card] = [deck.pick_card() for _ in range(6)]
+        self._player_name: str = player_name
 
     def __repr__(self) -> str:
         return f"{self._player_name} has {self._cards}"
@@ -29,73 +29,53 @@ class Hand:
 
         self._cards[card_index] = deck.pick_card()
 
-    def __is_flush(self, suits):
+    def __is_flush(self, suits: List[str]):
         return len(set(suits)) == 1
 
-    def __is_straight(self, values):
+    def __is_straight(self, values: List[str]):
         sorted_values = sorted(values)
         return all(sorted_values[i] + 1 == sorted_values[i + 1] for i in range(len(sorted_values) - 1))
 
-    def _get_hand_type(self) -> 'HandTypes':
-        """To get the frequency of cards suits, we can use a dict like this:
-        {
-            'clubs': {A, 2},
-            'spades': [2],
-            'hearts': [J], 
-            'diamonds': [10]
-        }
-
-        {
-            'As': ['clubs'],
-            'Q': [],
-            'J': ['hearts'],
-            ...
-        }
-        """
-
+    
+    def _get_hand_type(self) -> HandType:
         ranks = [card._card_rank for card in self._cards]
         suits = [card._card_suit for card in self._cards]
-        value_counts = Counter(ranks)
-        unique_values = list(value_counts.values())
-
+        
+        values = [Card.CARD_RANKS.index(rank) for rank in ranks]
+        values.sort()
+        
         is_flush = self.__is_flush(suits)
-        is_straight = self.__is_straight(ranks)
+        is_straight = self.__is_straight(values)
 
+        rank_counts = Counter(values)
+        most_common = rank_counts.most_common()
         
         # Check for Royal Flush
-        if is_flush and sorted(ranks) == [10, 11, 12, 13, 14]:
+        if is_flush and values == [8, 9, 10, 11, 12]:
             return HandType.ROYAL_FLUSH
-
         # Check for Straight Flush
         if is_flush and is_straight:
             return HandType.STRAIGHT_FLUSH
-
         # Check for Four of a Kind
-        if 4 in unique_values:
+        if most_common[0][1] == 4:
             return HandType.FOUR_OF_A_KIND
-
         # Check for Full House
-        if 3 in unique_values and 2 in unique_values:
+        if most_common[0][1] == 3 and most_common[1][1] == 2:
             return HandType.FULL_HOUSE
-
         # Check for Flush
         if is_flush:
             return HandType.FLUSH
-
         # Check for Straight
         if is_straight:
             return HandType.STRAIGHT
-
         # Check for Three of a Kind
-        if 3 in unique_values:
+        if most_common[0][1] == 3:
             return HandType.THREE_OF_A_KIND
-
         # Check for Two Pair
-        if unique_values.count(2) == 2:
+        if most_common[0][1] == 2 and most_common[1][1] == 2:
             return HandType.TWO_PAIR
-
         # Check for One Pair
-        if 2 in unique_values:
+        if most_common[0][1] == 2:
             return HandType.ONE_PAIR
-
+        # Else, return High Card
         return HandType.HIGH_CARD

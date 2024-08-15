@@ -10,7 +10,7 @@ class Deck:
 
     def __init__(self) -> None:
         # Initializing a shuffled _CARDS. The shuffle is random and changes on each execution.
-        self._cards = sample(self._CARDS, k=len(self._CARDS))
+        self._cards: List[Card] = sample(self._CARDS, k=len(self._CARDS))
 
     def __repr__(self) -> str:
         return f"{self._cards}"
