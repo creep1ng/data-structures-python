@@ -18,4 +18,4 @@ if __name__ == "__main__":
     print(deck)
     print("*"*30)
 
-    p1._get_hand_type()
+    print(p1._get_hand_type())

@@ -1,7 +1,8 @@
 from typing import List, Dict, Set
-from handtypes import HandTypes
+from handtypes import HandType
 from card import Card
 from deck import Deck
+from collections import Counter
 
 class Hand:
     _cards: List[Card]
@@ -28,6 +29,13 @@ class Hand:
 
         self._cards[card_index] = deck.pick_card()
 
+    def __is_flush(self, suits):
+        return len(set(suits)) == 1
+
+    def __is_straight(self, values):
+        sorted_values = sorted(values)
+        return all(sorted_values[i] + 1 == sorted_values[i + 1] for i in range(len(sorted_values) - 1))
+
     def _get_hand_type(self) -> 'HandTypes':
         """To get the frequency of cards suits, we can use a dict like this:
         {
@@ -44,14 +52,50 @@ class Hand:
             ...
         }
         """
-        hand_by_rank: Dict[str, List[str]] = dict.fromkeys(Card.CARD_RANKS, [])
 
-        print(hand_by_rank)
+        ranks = [card._card_rank for card in self._cards]
+        suits = [card._card_suit for card in self._cards]
+        value_counts = Counter(ranks)
+        unique_values = list(value_counts.values())
 
-        #for card in self._cards:
-            #if card._card_rank in hand_by_rank:
-                #hand_by_rank[card._card_rank] = hand_by_rank[card._card_rank].append(card._card_suit)
+        is_flush = self.__is_flush(suits)
+        is_straight = self.__is_straight(ranks)
+
         
-        hand_by_rank['As'].append(3)
+        # Check for Royal Flush
+        if is_flush and sorted(ranks) == [10, 11, 12, 13, 14]:
+            return HandType.ROYAL_FLUSH
 
-        print(hand_by_rank)
+        # Check for Straight Flush
+        if is_flush and is_straight:
+            return HandType.STRAIGHT_FLUSH
+
+        # Check for Four of a Kind
+        if 4 in unique_values:
+            return HandType.FOUR_OF_A_KIND
+
+        # Check for Full House
+        if 3 in unique_values and 2 in unique_values:
+            return HandType.FULL_HOUSE
+
+        # Check for Flush
+        if is_flush:
+            return HandType.FLUSH
+
+        # Check for Straight
+        if is_straight:
+            return HandType.STRAIGHT
+
+        # Check for Three of a Kind
+        if 3 in unique_values:
+            return HandType.THREE_OF_A_KIND
+
+        # Check for Two Pair
+        if unique_values.count(2) == 2:
+            return HandType.TWO_PAIR
+
+        # Check for One Pair
+        if 2 in unique_values:
+            return HandType.ONE_PAIR
+
+        return HandType.HIGH_CARD
