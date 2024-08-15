@@ -79,3 +79,13 @@ class Hand:
             return HandType.ONE_PAIR
         # Else, return High Card
         return HandType.HIGH_CARD
+    
+    def __str__(self) -> str:
+        """Retorna una representación en cadena de la mano del jugador."""
+        return f"Hand of {self._player_name}: " + ", ".join([str(card) for card in self._cards])
+    
+    def __eq__(self, other) -> bool:
+        """Compara si dos manos son iguales basado en el tipo de mano."""
+        if isinstance(other, Hand):
+            return self._get_hand_type() == other._get_hand_type()
+        return False

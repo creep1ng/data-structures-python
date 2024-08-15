@@ -42,3 +42,9 @@ class Card:
 
     def __gt__(self, y) -> bool:
         return self.CARD_RANKS.index(self._card_rank) <= self.CARD_RANKS.index(y._card_rank)
+    
+    def __str__(self) -> str:
+        """Retorna una representación en cadena de la carta."""
+        return f"{self.CARD_RANKS[self.CARD_RANKS.index(self._card_rank)]} de {self._card_suit.capitalize()}"
+    
+    

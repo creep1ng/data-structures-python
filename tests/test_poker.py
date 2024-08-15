@@ -1,8 +1,8 @@
 from unittest import TestCase
-from src.poker.card import Card
-from src.poker.deck import Deck
-from src.poker.hand import Hand
-from src.poker.handtypes import HandType
+from ..src.poker.card import Card
+from ..src.poker.deck import Deck
+from ..src.poker.hand import Hand
+from ..src.poker.handtypes import HandType
 
 class TestHand(TestCase):
     
