@@ -1,6 +1,6 @@
 from typing import List
 from random import choice, sample
-from card import Card
+from .card import Card
 
 class Deck:
     _CARDS: List[Card] = [Card(card_rank, card_suit)
@@ -21,4 +21,3 @@ class Deck:
         self._cards.remove(picked_card)
 
         return picked_card
-

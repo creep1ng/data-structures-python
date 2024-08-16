@@ -1,68 +1,60 @@
+import random
 from deck import Deck
 from hand import Hand
+from handtypes import HandType
 
 class Taller1:
+
+    def __init__(self, num_jugadores):
+        self.num_jugadores = num_jugadores
+        self.jugadores = [f"Jugador {i+1}" for i in range(num_jugadores)]
+        self.manos = []
+        self.deck = Deck()
+        self.pases = [False] * num_jugadores
+
+    def inicializar_manos(self):
+        self.manos = [Hand(self.deck, nombre) for nombre in self.jugadores]
+
+    def pedir_carta(self, jugador_index, carta_index):
+        self.manos[jugador_index].replace(self.deck, carta_index)
+        
+    def pasar(self, jugador_index):
+        self.pases[jugador_index] = True
+
+    def todos_pasan(self):
+        return all(self.pases)
     
-    def __init__(self) -> None:
-        self.deck = Deck()  # Inicializa un mazo barajado
-        self.players_hands = {}  # Diccionario para almacenar las manos de los jugadores
+    def mostrar_manos(self):
+        for mano in self.manos:
+            print(mano)
 
-    def add_player(self, player_name: str) -> None:
-        """Agrega un jugador al juego e inicializa su mano con 5 cartas."""
-        if player_name in self.players_hands:
-            raise ValueError(f"Player {player_name} is already in the game.")
-        
-        self.players_hands[player_name] = Hand(self.deck, player_name)
+    def obtener_ganador(self):
+        return max(self.manos, key=lambda mano: mano._get_hand_type().value)
 
-    def replace_cards(self, player_name: str, card_indices: list[int]) -> None:
-        """Permite al jugador reemplazar cartas en su mano."""
-        if player_name not in self.players_hands:
-            raise ValueError(f"Player {player_name} is not in the game.")
-        
-        for index in card_indices:
-            self.players_hands[player_name].replace(self.deck, index)
+    def jugar(self):
+        self.inicializar_manos()
+        turno_actual = 0
 
-    def show_hands(self) -> None:
-        """Muestra las manos actuales de todos los jugadores."""
-        for player_name, hand in self.players_hands.items():
-            print(hand)
+        while True:
+            print(f"\n--- Turno de {self.jugadores[turno_actual]} ---")
+            self.mostrar_manos()
 
-    def determine_winner(self) -> str:
-        """Determina cuál jugador tiene la mejor mano y retorna su nombre."""
-        best_hand = None
-        winner = None
+            accion = input(f"{self.jugadores[turno_actual]}, ¿Qué quieres hacer? (pasar/pedir): ").strip().lower()
 
-        for player_name, hand in self.players_hands.items():
-            if best_hand is None or hand._get_hand_type() > best_hand._get_hand_type():
-                best_hand = hand
-                winner = player_name
+            if accion == "pasar":
+                self.pasar(turno_actual)
+            elif accion == "pedir":
+                carta_index = int(input("Indica el índice de la carta que deseas reemplazar (0-4): "))
+                self.pedir_carta(turno_actual, carta_index)
 
-        return winner
+            if self.todos_pasan():
+                break
+            turno_actual = (turno_actual + 1) % self.num_jugadores
 
-    def main(self) -> None:
-        """Ejecuta el flujo principal del juego."""
-        num_players = int(input("Enter the number of players: "))
-        
-        for _ in range(num_players):
-            player_name = input("Enter the name of the player: ")
-            self.add_player(player_name)
+        ganador = self.obtener_ganador()
+        print(f"\nEl ganador es {ganador._player_name} con {ganador._get_hand_type().name}: {ganador}")
 
-        # Muestra las manos iniciales de todos los jugadores
-        print("Initial hands:")
-        self.show_hands()
-
-        # Permitir a cada jugador reemplazar cartas
-        for player_name in self.players_hands.keys():
-            replace = input(f"{player_name}, do you want to replace any cards? (yes/no): ").strip().lower()
-            if replace == 'yes':
-                card_indices = list(map(int, input("Enter the card indices to replace (1-5, separated by space): ").split()))
-                self.replace_cards(player_name, [index - 1 for index in card_indices])
-
-        # Muestra las manos finales de todos los jugadores
-        print("Final hands:")
-        self.show_hands()
-
-        # Determinar y anunciar el ganador
-        winner = self.determine_winner()
-        print(f"The winner is {winner} with the hand: {self.players_hands[winner]}")
-
+if __name__ == "__main__":
+    num_jugadores = int(input("¿Cuántos jugadores participarán?: ").strip())
+    juego = Taller1(num_jugadores)
+    juego.jugar()

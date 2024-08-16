@@ -1,7 +1,7 @@
 from typing import List, Dict, Set
-from handtypes import HandType
-from card import Card
-from deck import Deck
+from .handtypes import HandType
+from .card import Card
+from .deck import Deck
 from collections import Counter
 
 class Hand:
